@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dino Meme Arcade - Mobile Pro</title>
+  <title>Dino Meme Arcade - Difficulty Multiplier</title>
   <style>
     :root { 
       --bg-color: #0f172a;
@@ -25,13 +25,12 @@
       padding: 20px 15px; 
       user-select: none; 
       -webkit-user-select: none; 
-      /* ป้องกันการเด้งหรือ Scroll ตอนกดรัวๆ ในมือถือ */
       touch-action: pan-y; 
     }
 
     h1 { font-size: 24px; margin-bottom: 15px; color: var(--accent-neon); text-shadow: 0 0 10px rgba(0, 245, 212, 0.3); text-align: center; }
     
-    /* กล่องล็อกอิน */
+    /* กล่องล็อกอินและเลือกความยาก */
     #setup-zone { 
       background: var(--card-bg); 
       padding: 15px; 
@@ -39,16 +38,18 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
       margin-bottom: 15px; 
       display: flex; 
-      flex-wrap: wrap;
+      flex-direction: column;
       align-items: center; 
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       border: 1px solid #334155;
       width: 100%;
       max-width: 850px;
       transition: all 0.3s ease;
     }
-    #pName { 
+    .input-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; }
+    
+    #pName, #gameMode { 
       padding: 10px; 
       background: #0f172a;
       border: 2px solid #475569; 
@@ -58,11 +59,11 @@
       font-size: 14px; 
       text-align: center; 
       outline: none; 
-      width: 140px; 
     }
-    #pName:focus { border-color: var(--accent-neon); box-shadow: 0 0 8px rgba(0, 245, 212, 0.5); }
+    #pName { width: 140px; }
+    #gameMode { color: var(--accent-neon); cursor: pointer; }
+    #pName:focus, #gameMode:focus { border-color: var(--accent-neon); box-shadow: 0 0 8px rgba(0, 245, 212, 0.5); }
     
-    /* ปุ่มอัปโหลดรูป */
     .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; }
     .file-upload-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
     .btn-file { background: #334155; color: var(--text-main); padding: 10px 15px; border-radius: 10px; border: 1px dashed #94a3b8; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
@@ -94,7 +95,7 @@
     #game-box { 
       position: relative; 
       width: 100%; 
-      height: 250px; /* ลดความสูงลงนิดหน่อยให้พอดีจอมือถือ */
+      height: 250px; 
       border-bottom: 4px dashed var(--text-muted); 
       overflow: hidden; 
       border-radius: 12px;
@@ -138,7 +139,7 @@
     .btn-retry { background: var(--accent-neon); color: #0f172a; }
     .btn-quit { background: #475569; color: var(--text-main); }
 
-    /* 📱 ปุ่มกระโดดสำหรับมือถือ/ไอแพด (กดมันส์ๆ) */
+    /* ปุ่มกระโดดสำหรับมือถือ/ไอแพด */
     #btn-mobile-jump {
       width: 100%;
       max-width: 850px;
@@ -152,7 +153,7 @@
       border-radius: 15px;
       box-shadow: 0 8px 0 #00b39b;
       cursor: pointer;
-      touch-action: manipulation; /* ป้องกันการซูมจอเวลากดเบิ้ล */
+      touch-action: manipulation; 
       transition: 0.1s;
     }
     #btn-mobile-jump:active {
@@ -178,23 +179,33 @@
 </head>
 <body>
 
-  <h1>🦖 DINO ARCADE RIDER</h1>
+  <h1>🦖 DINO MULTIPLIER ARCADE</h1>
 
   <div id="setup-zone">
-    <input type="text" id="pName" placeholder="ชื่อนักซิ่ง..." maxlength="12">
-    
-    <div class="file-upload-wrapper">
-      <button class="btn-file" id="btn-file-label">📸 ใส่รูปโปรไฟล์</button>
-      <input type="file" id="pImage" accept="image/*" onchange="handleImageUpload(event)">
-    </div>
+    <div class="input-row">
+      <input type="text" id="pName" placeholder="ชื่อนักซิ่ง..." maxlength="12">
+      
+      <select id="gameMode">
+        <option value="1">🔥 โหมด x1 (เร่งรอบละ 0.001)</option>
+        <option value="2">⚡ โหมด x2 (เร่งรอบละ 0.01)</option>
+        <option value="💀">โหมด x5 (เร่งรอบละ 0.1)</option>
+        <option value="10">☣️ โหมด x10 (เร่งรอบละ 0.5)</option>
+        <option value="15">👹 โหมด x15 (เร่งรอบละ 1.0)</option>
+        <option value="20">👑 โหมด x20 (เร่งรอบละ 2.0)</option>
+      </select>
 
-    <button id="btn-start-play" onclick="confirmName()">ยืนยัน</button>
+      <div class="file-upload-wrapper">
+        <button class="btn-file" id="btn-file-label">📸 ใส่รูปโปรไฟล์</button>
+        <input type="file" id="pImage" accept="image/*" onchange="handleImageUpload(event)">
+      </div>
+    </div>
+    <button id="btn-start-play" onclick="confirmName()">ยืนยันข้อมูล</button>
   </div>
 
   <div id="game-container-wrapper">
     <div id="game-box">
       <div id="game-status">
-        <div id="status-text">🔒 ลงชื่อด้านบนก่อนลุย!</div>
+        <div id="status-text">🔒 ลงชื่อและเลือกโหมดด้านบนก่อนลุย!</div>
       </div>
 
       <div id="game-over-modal">
@@ -203,7 +214,7 @@
         <div id="modal-sync-text" style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">กำลังอัปเดตชีต...</div>
         <div class="modal-btn-group">
           <button class="btn-modal btn-retry" id="btn-retry-ui">จัดอีกรอบ!</button>
-          <button class="btn-modal btn-quit" onclick="quitToNameSetup()">เปลี่ยนชื่อ</button>
+          <button class="btn-modal btn-quit" onclick="quitToNameSetup()">เปลี่ยนชื่อ/โหมด</button>
         </div>
       </div>
 
@@ -228,7 +239,7 @@
   </div>
 
 <script>
-  // 🔴 URL ตัวล่าสุดที่คุณเพิ่งอัปเดต Apps Script แบบ POST ไป
+  // 🔴 URL สคริปต์ตัวเดิมของคุณ
   const API_URL = "https://script.google.com/macros/s/AKfycbzSQ7Q1g6xrYDqsNLo2ff1xTQsJHwEz2FYO6haqBc-bzp7_ARIthG8U6sMaTNAn2kc_VQ/exec";
 
   let isNameConfirmed = false; 
@@ -237,9 +248,13 @@
   let score = 0;
   let gameInterval;
   let cactusPos = 850;
-  let currentSpeed = 6.5;
   let confirmedPlayerName = "";
   let playerImageBase64 = ""; 
+
+  // 🟢 ประกาศตัวแปรเกี่ยวกับความเร็วและตัวคูณโหมด
+  let currentSpeed = 0;      // เริ่มแรกความเร็วเป็น 0 ตามสั่ง
+  let speedIncrement = 0.001;// ค่าเริ่มต้นเพิ่มทีละ 0.001
+  let scoreMultiplier = 1;   // ค่าตัวคูณคะแนนเริ่มต้น
 
   let dinoY = 0;               
   let dinoVelocityY = 0;       
@@ -249,6 +264,7 @@
   const dino = document.getElementById('dino');
   const cactus = document.getElementById('cactus');
   const pNameInput = document.getElementById('pName');
+  const gameModeSelect = document.getElementById('gameMode');
   const btnStart = document.getElementById('btn-start-play');
   const gameStatus = document.getElementById('game-status');
   const statusText = document.getElementById('status-text');
@@ -259,7 +275,6 @@
 
   window.onload = () => updateLeaderboard();
 
-  // จัดการกด Spacebar บน PC
   window.addEventListener('keydown', e => {
     if(e.code === 'Space') {
       e.preventDefault();
@@ -267,11 +282,8 @@
     }
   });
 
-  // รองรับการคลิก/ทัช ปุ่มกระโดดใหญ่ (ใช้ touchstart เพื่อตัดดีเลย์บนมือถือ)
   mobileJumpBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleActionInput(); });
   mobileJumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleActionInput(); });
-  
-  // รองรับคลิกปุ่ม Retry ใน Modal
   retryBtn.addEventListener('mousedown', (e) => { e.preventDefault(); restartFromModal(); });
   retryBtn.addEventListener('touchstart', (e) => { e.preventDefault(); restartFromModal(); });
 
@@ -285,7 +297,6 @@
     }
   }
 
-  // 📸 ย่อรูปให้เหลือ 80px ก่อนส่งลง Sheet
   function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -322,8 +333,24 @@
     const name = pNameInput.value.trim();
     if (!name) return alert("ใส่ชื่อก่อนวัยรุ่น!");
     
+    // 🟢 ล็อกค่าระบบโหมดและความยากที่เลือกตอนกดยืนยัน
+    const selectedModeValue = gameModeSelect.value;
+    
+    if(selectedModeValue === "💀") {
+      scoreMultiplier = 5;
+      speedIncrement = 0.1;
+    } else {
+      scoreMultiplier = Number(selectedModeValue);
+      if(scoreMultiplier === 1) speedIncrement = 0.001;
+      else if(scoreMultiplier === 2) speedIncrement = 0.01;
+      else if(scoreMultiplier === 10) speedIncrement = 0.5;
+      else if(scoreMultiplier === 15) speedIncrement = 1.0;
+      else if(scoreMultiplier === 20) speedIncrement = 2.0;
+    }
+
     confirmedPlayerName = name;
     pNameInput.disabled = true;
+    gameModeSelect.disabled = true;
     btnStart.disabled = true;
     btnStart.innerText = "กำลังซิงค์...";
     statusText.innerHTML = "กำลังส่งข้อมูลไป Sheet...<br><span style='font-size:13px; color:var(--accent-neon);'>รอสัญญาณตอบกลับ</span>";
@@ -343,13 +370,14 @@
         isNameConfirmed = true;
         document.getElementById('setup-zone').style.opacity = "0.5";
         btnStart.innerText = "ลงทะเบียนแล้ว";
-        statusText.innerHTML = `ลุยเลย ${confirmedPlayerName}!<br><span style='font-size:14px; color:var(--accent-neon);'>กดปุ่ม JUMP ด้านล่างเพื่อเริ่มซิ่ง</span>`;
+        statusText.innerHTML = `ลุยเลย ${confirmedPlayerName}! (โหมด x${scoreMultiplier})<br><span style='font-size:14px; color:var(--accent-neon);'>กดปุ่ม JUMP ด้านล่างเพื่อเริ่มซิ่ง</span>`;
       } else throw new Error("Server Error");
     })
     .catch(err => {
       pNameInput.disabled = false;
+      gameModeSelect.disabled = false;
       btnStart.disabled = false;
-      btnStart.innerText = "ยืนยัน";
+      btnStart.innerText = "ยืนยันข้อมูล";
       statusText.innerHTML = "<span style='color:var(--danger);'>เชื่อมต่อ Sheet ไม่ได้ ลองใหม่นะ</span>";
     });
   }
@@ -365,10 +393,10 @@
     isPlaying = true;
     score = 0;
     cactusPos = document.getElementById('game-box').offsetWidth; 
-    currentSpeed = 7.0;
-    dinoY = 0;
-    dinoVelocityY = 0;
     
+    // 🟢 ความเร็วเริ่มต้นเป็น 0 ตามโจทย์ของคุณ
+    currentSpeed = 0; 
+
     document.getElementById('currentScore').innerText = score;
     gameStatus.style.display = 'none';
     gameOverModal.style.display = 'none';
@@ -376,9 +404,13 @@
     dino.style.transform = "rotate(0deg)"; 
 
     gameInterval = setInterval(() => {
-      score++;
+      // 🟢 คะแนนบวกขึ้นตามโหมดตัวคูณ (เช่น เล่นโหมด x5 คะแนนก็ขึ้นทีละ 5)
+      score += scoreMultiplier;
       document.getElementById('currentScore').innerText = score;
       
+      // 🟢 ความเร็วค่อยๆ เร่งเพิ่มขึ้นเรื่อยๆ ทีละจุดตามโหมดที่ตั้งไว้
+      currentSpeed += speedIncrement;
+
       if (dinoY > 0 || dinoVelocityY > 0) {
         dinoVelocityY -= gravity; 
         dinoY += dinoVelocityY; 
@@ -396,7 +428,9 @@
         dino.style.transform = `rotate(${angle}deg)`;
       } else { dino.style.transform = ""; }
 
-      cactusPos -= (currentSpeed + (score / 500));
+      // 🟢 หักลบตำแหน่งตามความเร็ว ณ ปัจจุบันที่เร่งขึ้นเรื่อยๆ
+      cactusPos -= currentSpeed;
+
       if(cactusPos < -40) {
         const obstacles = ['🌵', '🌴', '🧱', '🍄', '💩'];
         cactus.innerText = obstacles[Math.floor(Math.random() * obstacles.length)];
@@ -404,7 +438,7 @@
       }
       cactus.style.left = cactusPos + 'px';
 
-      // 💥 Hitbox (ปรับแต่งให้เนียนขึ้นสำหรับจอทุกขนาด)
+      // Hitbox
       if (cactusPos > 40 && cactusPos < 100) { 
         if (dinoY < 45) { 
           gameOver(confirmedPlayerName, score);
@@ -456,13 +490,14 @@
   function quitToNameSetup() {
     gameOverModal.style.display = 'none';
     gameStatus.style.display = 'flex';
-    statusText.innerHTML = "🔒 ลงชื่อด้านบนก่อนลุย!";
+    statusText.innerHTML = "🔒 ลงชื่อและเลือกโหมดด้านบนก่อนลุย!";
     
     isNameConfirmed = false;
     pNameInput.disabled = false;
+    gameModeSelect.disabled = false;
     pNameInput.value = "";
     btnStart.disabled = false;
-    btnStart.innerText = "ยืนยัน";
+    btnStart.innerText = "ยืนยันข้อมูล";
     document.getElementById('setup-zone').style.opacity = "1";
     document.getElementById('btn-file-label').innerText = "📸 ใส่รูปโปรไฟล์";
     document.getElementById('btn-file-label').style.borderColor = "";
@@ -493,7 +528,6 @@
       let rankClass = (i < 3) ? 'rank top3' : 'rank';
       let rankText = (i === 0) ? '🥇' : (i === 1) ? '🥈' : (i === 2) ? '🥉' : `#${i+1}`;
       
-      // 🖼️ ดึงรูปจาก Sheet (Column D หรือ row[3]) มาแสดง ถ้าไม่มีให้ใช้รูป Default
       let imgData = row[3] && row[3].length > 100 ? row[3] : 'image_3e4e5d.png';
       let imgStyle = imgData === 'image_3e4e5d.png' ? 'opacity: 0.3;' : '';
       
