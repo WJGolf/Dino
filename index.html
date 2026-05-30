@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dino Meme Arcade - Custom Avatar</title>
+  <title>Dino Meme Arcade - Mobile Pro</title>
   <style>
     :root { 
       --bg-color: #0f172a;
@@ -22,30 +22,34 @@
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      padding: 30px 20px; 
+      padding: 20px 15px; 
       user-select: none; 
       -webkit-user-select: none; 
+      /* ป้องกันการเด้งหรือ Scroll ตอนกดรัวๆ ในมือถือ */
+      touch-action: pan-y; 
     }
 
-    h1 { font-size: 26px; margin-bottom: 20px; color: var(--accent-neon); text-shadow: 0 0 10px rgba(0, 245, 212, 0.3); }
+    h1 { font-size: 24px; margin-bottom: 15px; color: var(--accent-neon); text-shadow: 0 0 10px rgba(0, 245, 212, 0.3); text-align: center; }
     
     /* กล่องล็อกอิน */
     #setup-zone { 
       background: var(--card-bg); 
-      padding: 15px 25px; 
+      padding: 15px; 
       border-radius: 16px; 
       box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
-      margin-bottom: 20px; 
+      margin-bottom: 15px; 
       display: flex; 
       flex-wrap: wrap;
       align-items: center; 
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       border: 1px solid #334155;
+      width: 100%;
+      max-width: 850px;
       transition: all 0.3s ease;
     }
     #pName { 
-      padding: 10px 15px; 
+      padding: 10px; 
       background: #0f172a;
       border: 2px solid #475569; 
       color: var(--text-main);
@@ -54,7 +58,7 @@
       font-size: 14px; 
       text-align: center; 
       outline: none; 
-      width: 150px; 
+      width: 140px; 
     }
     #pName:focus { border-color: var(--accent-neon); box-shadow: 0 0 8px rgba(0, 245, 212, 0.5); }
     
@@ -62,8 +66,7 @@
     .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; }
     .file-upload-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
     .btn-file { background: #334155; color: var(--text-main); padding: 10px 15px; border-radius: 10px; border: 1px dashed #94a3b8; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
-    .btn-file:hover { background: #475569; border-color: var(--accent-neon); color: var(--accent-neon); }
-
+    
     #btn-start-play { 
       padding: 10px 20px; 
       background: var(--accent-neon); 
@@ -73,10 +76,8 @@
       font-weight: bold; 
       cursor: pointer; 
       font-size: 14px; 
-      transition: 0.2s; 
     }
-    #btn-start-play:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent-neon); }
-    #btn-start-play:disabled { background: #475569; color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; }
+    #btn-start-play:disabled { background: #475569; color: var(--text-muted); cursor: not-allowed; }
     
     /* หน้าจอเกม */
     #game-container-wrapper {
@@ -86,33 +87,31 @@
       background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
       border: 3px solid #334155;
       border-radius: 20px;
-      padding: 10px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      padding: 5px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     #game-box { 
       position: relative; 
       width: 100%; 
-      height: 300px; 
+      height: 250px; /* ลดความสูงลงนิดหน่อยให้พอดีจอมือถือ */
       border-bottom: 4px dashed var(--text-muted); 
       overflow: hidden; 
-      cursor: pointer; 
       border-radius: 12px;
     }
 
     /* ตัวผู้เล่น */
     #dino { 
       position: absolute; 
-      width: 65px; 
-      height: 65px; 
+      width: 60px; 
+      height: 60px; 
       bottom: 0px; 
-      left: 80px; 
-      /* ใส่ภาพ Default หากไม่ได้อัปรูป */
+      left: 50px; 
       background-image: url('image_3e4e5d.png'); 
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      border-radius: 8px; /* ลบขอบเหลี่ยมเผื่ออัปรูปมา */
+      border-radius: 8px; 
       z-index: 2;
       transform-origin: center;
     }
@@ -123,35 +122,54 @@
       100% { transform: rotate(6deg) scaleY(1.03); }
     }
     
-    #cactus { position: absolute; width: 40px; height: 60px; bottom: 0; left: 100%; display: flex; align-items: center; justify-content: center; font-size: 45px; z-index: 2; }
+    #cactus { position: absolute; width: 40px; height: 60px; bottom: 0; left: 100%; display: flex; align-items: center; justify-content: center; font-size: 40px; z-index: 2; }
     #game-status { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
-    #status-text { font-size: 18px; font-weight: bold; color: var(--text-main); margin-bottom: 8px; text-align: center; padding: 0 20px; }
+    #status-text { font-size: 16px; font-weight: bold; color: var(--text-main); margin-bottom: 8px; text-align: center; padding: 0 20px; }
     
     /* POPUP */
     #game-over-modal {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(4px);
     }
-    .modal-title { font-size: 32px; color: var(--danger); font-weight: bold; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,71,87,0.4); }
-    .modal-score { font-size: 20px; color: var(--text-main); margin-bottom: 15px; }
-    .modal-btn-group { display: flex; gap: 15px; }
-    .btn-modal { padding: 12px 28px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s; }
+    .modal-title { font-size: 28px; color: var(--danger); font-weight: bold; margin-bottom: 5px; }
+    .modal-score { font-size: 18px; color: var(--text-main); margin-bottom: 15px; }
+    .modal-btn-group { display: flex; flex-direction: column; gap: 10px; width: 80%; }
+    .btn-modal { padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
     .btn-retry { background: var(--accent-neon); color: #0f172a; }
-    .btn-retry:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent-neon); }
     .btn-quit { background: #475569; color: var(--text-main); }
-    .btn-quit:hover { background: #64748b; }
 
-    #score-zone { margin-top: 15px; font-size: 28px; font-weight: bold; color: var(--accent-neon); text-shadow: 0 0 5px rgba(0, 245, 212, 0.2); }
-    #hint { font-size: 14px; color: var(--text-muted); margin-top: 5px; text-align: center; }
+    /* 📱 ปุ่มกระโดดสำหรับมือถือ/ไอแพด (กดมันส์ๆ) */
+    #btn-mobile-jump {
+      width: 100%;
+      max-width: 850px;
+      margin-top: 15px;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      background: var(--accent-neon);
+      color: #0f172a;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 8px 0 #00b39b;
+      cursor: pointer;
+      touch-action: manipulation; /* ป้องกันการซูมจอเวลากดเบิ้ล */
+      transition: 0.1s;
+    }
+    #btn-mobile-jump:active {
+      transform: translateY(8px);
+      box-shadow: 0 0 0 #00b39b;
+    }
+
+    #score-zone { margin-top: 15px; font-size: 24px; font-weight: bold; color: var(--accent-neon); }
     
     /* ตารางคะแนน */
-    #leaderboard { width: 100%; max-width: 850px; margin-top: 25px; background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #334155; }
-    #lb-title { font-size: 16px; font-weight: bold; color: var(--text-main); margin-bottom: 15px; border-left: 4px solid var(--accent-neon); padding-left: 10px; display: flex; justify-content: space-between; }
+    #leaderboard { width: 100%; max-width: 850px; margin-top: 20px; background: var(--card-bg); border-radius: 16px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #334155; }
+    #lb-title { font-size: 14px; font-weight: bold; color: var(--text-main); margin-bottom: 15px; border-left: 4px solid var(--accent-neon); padding-left: 10px; display: flex; justify-content: space-between; }
     table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; color: var(--text-muted); font-size: 12px; text-transform: uppercase; padding-bottom: 10px; border-bottom: 2px solid #334155; }
-    td { padding: 10px 0; border-bottom: 1px solid #334155; font-size: 15px; vertical-align: middle; }
-    .rank { font-weight: bold; width: 60px; color: var(--text-muted); }
-    .top3 { color: #ff9f43; font-size: 18px; }
+    th { text-align: left; color: var(--text-muted); font-size: 12px; padding-bottom: 10px; border-bottom: 2px solid #334155; }
+    td { padding: 8px 0; border-bottom: 1px solid #334155; font-size: 14px; vertical-align: middle; }
+    .rank { font-weight: bold; width: 40px; color: var(--text-muted); }
+    .top3 { color: #ff9f43; font-size: 16px; }
     .score-val { text-align: right; color: var(--accent-neon); font-weight: bold; }
     
     .player-profile { display: flex; align-items: center; gap: 10px; }
@@ -160,34 +178,32 @@
 </head>
 <body>
 
-  <h1>🦖 DINO MEME ARCADE RIDER</h1>
+  <h1>🦖 DINO ARCADE RIDER</h1>
 
   <div id="setup-zone">
-    <label for="pName" style="font-weight: bold; color: var(--text-muted);">ชื่อนักซิ่ง:</label>
-    <input type="text" id="pName" placeholder="พิมพ์ชื่อสิวัยรุ่น..." maxlength="12">
+    <input type="text" id="pName" placeholder="ชื่อนักซิ่ง..." maxlength="12">
     
     <div class="file-upload-wrapper">
-      <button class="btn-file" id="btn-file-label">📸 อัปรูปตัวเอง (ไม่บังคับ)</button>
+      <button class="btn-file" id="btn-file-label">📸 ใส่รูปโปรไฟล์</button>
       <input type="file" id="pImage" accept="image/*" onchange="handleImageUpload(event)">
     </div>
 
-    <button id="btn-start-play" onclick="confirmName()">ยืนยันสิทธิ์</button>
+    <button id="btn-start-play" onclick="confirmName()">ยืนยัน</button>
   </div>
 
   <div id="game-container-wrapper">
-    <div id="game-box" onclick="triggerAction()">
+    <div id="game-box">
       <div id="game-status">
-        <div id="status-text">🔒 ลงชื่อด้านบนเพื่อปลดล็อกขุมพลัง!</div>
+        <div id="status-text">🔒 ลงชื่อด้านบนก่อนลุย!</div>
       </div>
 
       <div id="game-over-modal">
-        <div class="modal-title">ชนยับไปดิ!</div>
-        <div class="modal-score">คะแนนที่คุณทำได้เมื่อกี้: <span id="modalScoreVal" style="color:var(--accent-neon); font-weight:bold;">0</span> ช่อง</div>
-        <div id="modal-sync-text" style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">กำลังส่งข้อมูลลงชีต...</div>
-        <div style="font-size:16px; margin-bottom:15px; font-weight:bold;">" จะเอาอีกรอบไหม หรือป๊อดแล้ว? "</div>
+        <div class="modal-title">เกมโอเวอร์!</div>
+        <div class="modal-score">คะแนน: <span id="modalScoreVal" style="color:var(--accent-neon); font-weight:bold;">0</span></div>
+        <div id="modal-sync-text" style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">กำลังอัปเดตชีต...</div>
         <div class="modal-btn-group">
-          <button class="btn-modal btn-retry" onclick="restartFromModal()">จัดมาอีกรอบ! (Space)</button>
-          <button class="btn-modal btn-quit" onclick="quitToNameSetup()">ยอมแพ้/เปลี่ยนชื่อ</button>
+          <button class="btn-modal btn-retry" id="btn-retry-ui">จัดอีกรอบ!</button>
+          <button class="btn-modal btn-quit" onclick="quitToNameSetup()">เปลี่ยนชื่อ</button>
         </div>
       </div>
 
@@ -196,8 +212,9 @@
     </div>
   </div>
 
+  <button id="btn-mobile-jump">🚀 JUMP! (กระโดด)</button>
+
   <div id="score-zone">SCORE: <span id="currentScore">0</span></div>
-  <div id="hint">กดยืนยันชื่อเสร็จ แตะหน้าจอเกมหรือกด Spacebar เพื่อโดด</div>
 
   <div id="leaderboard">
     <div id="lb-title">
@@ -205,13 +222,13 @@
       <span id="sync-status" style="font-size:12px; color:var(--text-muted); font-weight:normal;">กำลังโหลดข้อมูล...</span>
     </div>
     <table>
-      <thead><tr><th>อันดับ</th><th>รายชื่อวัยรุ่น</th><th style="text-align:right">คะแนนสูงสุด</th></tr></thead>
+      <thead><tr><th>Rank</th><th>รายชื่อวัยรุ่น</th><th style="text-align:right">Score</th></tr></thead>
       <tbody id="lbBody"></tbody>
     </table>
   </div>
 
 <script>
-  // 🔴 เอา URL ของ Web App ตัวใหม่มาใส่ที่นี่!
+  // 🔴 URL ตัวล่าสุดที่คุณเพิ่งอัปเดต Apps Script แบบ POST ไป
   const API_URL = "https://script.google.com/macros/s/AKfycbzSQ7Q1g6xrYDqsNLo2ff1xTQsJHwEz2FYO6haqBc-bzp7_ARIthG8U6sMaTNAn2kc_VQ/exec";
 
   let isNameConfirmed = false; 
@@ -220,14 +237,14 @@
   let score = 0;
   let gameInterval;
   let cactusPos = 850;
-  let currentSpeed = 7;
+  let currentSpeed = 6.5;
   let confirmedPlayerName = "";
-  let playerImageBase64 = ""; // เก็บค่ารูปภาพ
+  let playerImageBase64 = ""; 
 
   let dinoY = 0;               
   let dinoVelocityY = 0;       
-  const gravity = 0.75;        
-  const jumpForce = 14.5;      
+  const gravity = 0.8;        
+  const jumpForce = 13.5;      
 
   const dino = document.getElementById('dino');
   const cactus = document.getElementById('cactus');
@@ -237,29 +254,49 @@
   const statusText = document.getElementById('status-text');
   const syncStatus = document.getElementById('sync-status');
   const gameOverModal = document.getElementById('game-over-modal');
+  const mobileJumpBtn = document.getElementById('btn-mobile-jump');
+  const retryBtn = document.getElementById('btn-retry-ui');
 
   window.onload = () => updateLeaderboard();
 
+  // จัดการกด Spacebar บน PC
   window.addEventListener('keydown', e => {
     if(e.code === 'Space') {
       e.preventDefault();
-      if (gameOverModal.style.display === 'flex' && !isSaving) restartFromModal();
-      else triggerAction();
+      handleActionInput();
     }
   });
 
-  // 📸 ฟังก์ชันแปลงและบีบอัดรูปก่อนเล่นเกม
+  // รองรับการคลิก/ทัช ปุ่มกระโดดใหญ่ (ใช้ touchstart เพื่อตัดดีเลย์บนมือถือ)
+  mobileJumpBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleActionInput(); });
+  mobileJumpBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleActionInput(); });
+  
+  // รองรับคลิกปุ่ม Retry ใน Modal
+  retryBtn.addEventListener('mousedown', (e) => { e.preventDefault(); restartFromModal(); });
+  retryBtn.addEventListener('touchstart', (e) => { e.preventDefault(); restartFromModal(); });
+
+  function handleActionInput() {
+    if (!isNameConfirmed) return alert("กรุณาใส่ชื่อแล้วกดยืนยันก่อนครับ!");
+    if (gameOverModal.style.display === 'flex') {
+      if (!isSaving) restartFromModal();
+    } else {
+      if (!isPlaying && !isSaving) startGame();
+      else if (isPlaying) jump();
+    }
+  }
+
+  // 📸 ย่อรูปให้เหลือ 80px ก่อนส่งลง Sheet
   function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-    document.getElementById('btn-file-label').innerText = "⏳ กำลังประมวลผล...";
+    document.getElementById('btn-file-label').innerText = "⏳ รอแป๊บ...";
 
     const reader = new FileReader();
     reader.onload = function(e) {
       const img = new Image();
       img.onload = function() {
         const canvas = document.createElement('canvas');
-        const MAX_SIZE = 80; // บีบรูปให้เหลือ 80x80px จะได้ไม่เปลืองพื้นที่ Sheet
+        const MAX_SIZE = 80; 
         let width = img.width;
         let height = img.height;
         
@@ -271,9 +308,8 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
         
-        // แปลงเป็น Base64
         playerImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
-        document.getElementById('btn-file-label').innerHTML = "✅ รูปพร้อมซิ่ง!";
+        document.getElementById('btn-file-label').innerHTML = "✅ รูปพร้อม!";
         document.getElementById('btn-file-label').style.borderColor = "var(--accent-neon)";
         document.getElementById('btn-file-label').style.color = "var(--accent-neon)";
       };
@@ -284,50 +320,38 @@
 
   function confirmName() {
     const name = pNameInput.value.trim();
-    if (!name) return alert("เหยียบเบรกก่อน! กรุณาใส่ชื่อของคุณก่อนเริ่มเล่นนะค๊าบ");
+    if (!name) return alert("ใส่ชื่อก่อนวัยรุ่น!");
     
     confirmedPlayerName = name;
     pNameInput.disabled = true;
     btnStart.disabled = true;
-    btnStart.innerText = "กำลังซิงค์ข้อมูล...";
-    statusText.innerHTML = "กำลังส่งชื่อและรูปไปที่ Sheet...<br><span style='font-size:13px; color:var(--accent-neon);'>รอสักแป๊บนะ</span>";
+    btnStart.innerText = "กำลังซิงค์...";
+    statusText.innerHTML = "กำลังส่งข้อมูลไป Sheet...<br><span style='font-size:13px; color:var(--accent-neon);'>รอสัญญาณตอบกลับ</span>";
 
-    // เปลี่ยนรูปผู้เล่นในเกมทันที
-    if (playerImageBase64) {
-      dino.style.backgroundImage = `url('${playerImageBase64}')`;
-    }
+    if (playerImageBase64) { dino.style.backgroundImage = `url('${playerImageBase64}')`; }
 
-    // ใช้ Fetch API (POST) เพื่อรองรับการส่ง Base64 รูปภาพ
     const payload = { action: 'register', name: name, image: playerImageBase64 };
     
     fetch(API_URL, {
       method: "POST",
       body: JSON.stringify(payload),
-      headers: { "Content-Type": "text/plain;charset=utf-8" } // ใช้ text/plain เลี่ยงปัญหา CORS Preflight
+      headers: { "Content-Type": "text/plain;charset=utf-8" } 
     })
     .then(res => res.json())
     .then(response => {
       if (response && response.status === "success") {
         isNameConfirmed = true;
-        document.getElementById('setup-zone').style.opacity = "0.4";
+        document.getElementById('setup-zone').style.opacity = "0.5";
         btnStart.innerText = "ลงทะเบียนแล้ว";
-        statusText.innerHTML = "ยินดีต้อนรับคุณ " + confirmedPlayerName + "!<br><span style='font-size:15px; color:var(--accent-neon);'>🎮 คลิกตรงนี้ หรือกด Spacebar เพื่อซิ่งเลย!</span>";
-      } else {
-        throw new Error("Server Error");
-      }
+        statusText.innerHTML = `ลุยเลย ${confirmedPlayerName}!<br><span style='font-size:14px; color:var(--accent-neon);'>กดปุ่ม JUMP ด้านล่างเพื่อเริ่มซิ่ง</span>`;
+      } else throw new Error("Server Error");
     })
     .catch(err => {
       pNameInput.disabled = false;
       btnStart.disabled = false;
-      btnStart.innerText = "ยืนยันสิทธิ์";
-      statusText.innerHTML = "<span style='color:var(--danger);'>เชื่อมต่อ Sheet ไม่ได้ ลองใหม่อีกครั้ง</span>";
+      btnStart.innerText = "ยืนยัน";
+      statusText.innerHTML = "<span style='color:var(--danger);'>เชื่อมต่อ Sheet ไม่ได้ ลองใหม่นะ</span>";
     });
-  }
-
-  function triggerAction() {
-    if (!isNameConfirmed) return alert("กรุณาพิมพ์ชื่อนักซิ่งแล้วกดยืนยันสิทธิ์ด้านบนก่อนนะครับ");
-    if (!isPlaying && !isSaving && gameOverModal.style.display !== 'flex') startGame();
-    else if (isPlaying) jump();
   }
 
   function jump() {
@@ -340,8 +364,8 @@
   function startGame() {
     isPlaying = true;
     score = 0;
-    cactusPos = 850;
-    currentSpeed = 7.5;
+    cactusPos = document.getElementById('game-box').offsetWidth; 
+    currentSpeed = 7.0;
     dinoY = 0;
     dinoVelocityY = 0;
     
@@ -370,20 +394,19 @@
       if (dinoY > 0) {
         let angle = -dinoVelocityY * 2.5; 
         dino.style.transform = `rotate(${angle}deg)`;
-      } else {
-        dino.style.transform = ""; 
-      }
+      } else { dino.style.transform = ""; }
 
-      cactusPos -= (currentSpeed + (score / 400));
+      cactusPos -= (currentSpeed + (score / 500));
       if(cactusPos < -40) {
         const obstacles = ['🌵', '🌴', '🧱', '🍄', '💩'];
         cactus.innerText = obstacles[Math.floor(Math.random() * obstacles.length)];
-        cactusPos = 850;
+        cactusPos = document.getElementById('game-box').offsetWidth + 50;
       }
       cactus.style.left = cactusPos + 'px';
 
-      if (cactusPos > 60 && cactusPos < 135) { 
-        if (dinoY < 55) { 
+      // 💥 Hitbox (ปรับแต่งให้เนียนขึ้นสำหรับจอทุกขนาด)
+      if (cactusPos > 40 && cactusPos < 100) { 
+        if (dinoY < 45) { 
           gameOver(confirmedPlayerName, score);
         }
       }
@@ -397,9 +420,9 @@
     dino.classList.remove('dino-running');
     
     document.getElementById('modalScoreVal').innerText = finalScore.toLocaleString();
-    document.getElementById('modal-sync-text').innerText = "กำลังตรวจเช็คสกอร์ลง Google Sheet...";
+    document.getElementById('modal-sync-text').innerText = "กำลังเซฟสถิติลง Sheet...";
     gameOverModal.style.display = 'flex';
-    syncStatus.innerText = "กำลังอัปเดตกระดาน...";
+    syncStatus.innerText = "กำลังอัปเดต...";
 
     const payload = { action: 'save', name: name, score: finalScore };
     
@@ -413,18 +436,19 @@
       isSaving = false;
       if (response && response.status === "success") {
         renderTable(response.data);
-        document.getElementById('modal-sync-text').innerHTML = "✅ ซิงค์คะแนนลงชีตสำเร็จแล้ว!";
-        syncStatus.innerText = "เชื่อมต่อเสถียร";
+        document.getElementById('modal-sync-text').innerHTML = "✅ เซฟลงชีตเรียบร้อย!";
+        syncStatus.innerText = "อัปเดตแล้ว";
       } else throw new Error("Sync failed");
     })
     .catch(err => {
       isSaving = false;
-      document.getElementById('modal-sync-text').innerHTML = "⚠️ ซิงค์คะแนนไม่สำเร็จ (แต่เล่นต่อได้นะ)";
-      syncStatus.innerText = "คลาวด์ขัดข้อง";
+      document.getElementById('modal-sync-text').innerHTML = "⚠️ เน็ตหลุด เซฟไม่ติด";
+      syncStatus.innerText = "ออฟไลน์";
     });
   }
 
   function restartFromModal() {
+    if(isSaving) return;
     gameOverModal.style.display = 'none';
     startGame();
   }
@@ -432,30 +456,29 @@
   function quitToNameSetup() {
     gameOverModal.style.display = 'none';
     gameStatus.style.display = 'flex';
-    statusText.innerHTML = "🔒 ลงชื่อด้านบนเพื่อปลดล็อกขุมพลัง!";
+    statusText.innerHTML = "🔒 ลงชื่อด้านบนก่อนลุย!";
     
     isNameConfirmed = false;
     pNameInput.disabled = false;
     pNameInput.value = "";
     btnStart.disabled = false;
-    btnStart.innerText = "ยืนยันสิทธิ์";
+    btnStart.innerText = "ยืนยัน";
     document.getElementById('setup-zone').style.opacity = "1";
-    document.getElementById('btn-file-label').innerText = "📸 อัปรูปตัวเอง (ไม่บังคับ)";
+    document.getElementById('btn-file-label').innerText = "📸 ใส่รูปโปรไฟล์";
     document.getElementById('btn-file-label').style.borderColor = "";
     document.getElementById('btn-file-label').style.color = "";
     playerImageBase64 = "";
-    dino.style.backgroundImage = "url('image_3e4e5d.png')"; // คืนค่ารูป Default
+    dino.style.backgroundImage = "url('image_3e4e5d.png')"; 
   }
 
   function updateLeaderboard() {
-    syncStatus.innerText = "กำลังดึงข้อมูลชีต...";
-    // ขอตารางคะแนนแบบ GET ปกติ
+    syncStatus.innerText = "กำลังโหลดข้อมูล...";
     fetch(API_URL + "?action=get")
       .then(res => res.json())
       .then(response => {
         if (response && response.status === "success") {
           renderTable(response.data);
-          syncStatus.innerText = "เชื่อมต่อเสถียร";
+          syncStatus.innerText = "อัปเดตล่าสุด";
         }
       }).catch(err => { syncStatus.innerText = "คลาวด์ขัดข้อง"; });
   }
@@ -463,21 +486,23 @@
   function renderTable(data) {
     const body = document.getElementById('lbBody');
     if(!data || data.length === 0) {
-      body.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">ยังไม่มีข้อมูลวัยรุ่นในฐานข้อมูลชีตนี้</td></tr>`;
+      body.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">ยังไม่มีใครทำคะแนน</td></tr>`;
       return;
     }
     body.innerHTML = data.map((row, i) => {
       let rankClass = (i < 3) ? 'rank top3' : 'rank';
       let rankText = (i === 0) ? '🥇' : (i === 1) ? '🥈' : (i === 2) ? '🥉' : `#${i+1}`;
-      // ถ้าไม่มีรูป (row[3]) ให้ใช้รูป default ไปก่อน
-      let imgTag = row[3] ? `<img src="${row[3]}" class="player-avatar">` : `<img src="image_3e4e5d.png" class="player-avatar" style="opacity:0.3">`;
-
+      
+      // 🖼️ ดึงรูปจาก Sheet (Column D หรือ row[3]) มาแสดง ถ้าไม่มีให้ใช้รูป Default
+      let imgData = row[3] && row[3].length > 100 ? row[3] : 'image_3e4e5d.png';
+      let imgStyle = imgData === 'image_3e4e5d.png' ? 'opacity: 0.3;' : '';
+      
       return `
         <tr>
           <td class="${rankClass}">${rankText}</td>
           <td>
             <div class="player-profile">
-              ${imgTag}
+              <img src="${imgData}" class="player-avatar" style="${imgStyle}">
               <span style="color:var(--text-main); font-weight:${i < 3 ? 'bold' : 'normal'}">${row[0]}</span>
             </div>
           </td>
@@ -488,4 +513,4 @@
   }
 </script>
 </body>
-</html> 
+</html>
