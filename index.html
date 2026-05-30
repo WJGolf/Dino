@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dino Meme Arcade - Difficulty Multiplier</title>
+  <title>Dino Meme Arcade - Perfect Balance</title>
   <style>
     :root { 
       --bg-color: #0f172a;
@@ -186,12 +186,12 @@
       <input type="text" id="pName" placeholder="ชื่อนักซิ่ง..." maxlength="12">
       
       <select id="gameMode">
-        <option value="1">🔥 โหมด x1 (เร่งรอบละ 0.001)</option>
-        <option value="2">⚡ โหมด x2 (เร่งรอบละ 0.01)</option>
-        <option value="💀">โหมด x5 (เร่งรอบละ 0.1)</option>
-        <option value="10">☣️ โหมด x10 (เร่งรอบละ 0.5)</option>
-        <option value="15">👹 โหมด x15 (เร่งรอบละ 1.0)</option>
-        <option value="20">👑 โหมด x20 (เร่งรอบละ 2.0)</option>
+        <option value="1">🔥 โหมด x1 (เร่งความเร็วระดับปกติ)</option>
+        <option value="2">⚡ โหมด x2 (เร่งความเร็ว x2)</option>
+        <option value="5">💀 โหมด x5 (เร่งความเร็ว x5)</option>
+        <option value="10">☣️ โหมด x10 (เร่งความเร็ว x10)</option>
+        <option value="15">👹 โหมด x15 (เร่งความเร็ว x15)</option>
+        <option value="20">👑 โหมด x20 (เร่งความเร็วระดับนรกแตก)</option>
       </select>
 
       <div class="file-upload-wrapper">
@@ -239,7 +239,6 @@
   </div>
 
 <script>
-  // 🔴 URL สคริปต์ตัวเดิมของคุณ
   const API_URL = "https://script.google.com/macros/s/AKfycbzSQ7Q1g6xrYDqsNLo2ff1xTQsJHwEz2FYO6haqBc-bzp7_ARIthG8U6sMaTNAn2kc_VQ/exec";
 
   let isNameConfirmed = false; 
@@ -251,10 +250,10 @@
   let confirmedPlayerName = "";
   let playerImageBase64 = ""; 
 
-  // 🟢 ประกาศตัวแปรเกี่ยวกับความเร็วและตัวคูณโหมด
-  let currentSpeed = 0;      // เริ่มแรกความเร็วเป็น 0 ตามสั่ง
-  let speedIncrement = 0.001;// ค่าเริ่มต้นเพิ่มทีละ 0.001
-  let scoreMultiplier = 1;   // ค่าตัวคูณคะแนนเริ่มต้น
+  // 🟢 จูนระบบสมดุลใหม่: ทุกโหมดสตาร์ทที่ความเร็ว 7.0 เท่าเวอร์ชันแรก
+  let currentSpeed = 7.0;       
+  let speedIncrement = 0.002;  // อัตราเร่งพื้นฐานดั้งเดิม
+  let scoreMultiplier = 1;   
 
   let dinoY = 0;               
   let dinoVelocityY = 0;       
@@ -333,20 +332,15 @@
     const name = pNameInput.value.trim();
     if (!name) return alert("ใส่ชื่อก่อนวัยรุ่น!");
     
-    // 🟢 ล็อกค่าระบบโหมดและความยากที่เลือกตอนกดยืนยัน
-    const selectedModeValue = gameModeSelect.value;
+    scoreMultiplier = Number(gameModeSelect.value);
     
-    if(selectedModeValue === "💀") {
-      scoreMultiplier = 5;
-      speedIncrement = 0.1;
-    } else {
-      scoreMultiplier = Number(selectedModeValue);
-      if(scoreMultiplier === 1) speedIncrement = 0.001;
-      else if(scoreMultiplier === 2) speedIncrement = 0.01;
-      else if(scoreMultiplier === 10) speedIncrement = 0.5;
-      else if(scoreMultiplier === 15) speedIncrement = 1.0;
-      else if(scoreMultiplier === 20) speedIncrement = 2.0;
-    }
+    // 🟢 คำนวณอัตราเร่งความเร็วให้สอดคล้องแบบสมดุล ไม่ยากเร็วจนเกินไปในเฟรมแรกๆ
+    if (scoreMultiplier === 1) speedIncrement = 0.002;
+    else if (scoreMultiplier === 2) speedIncrement = 0.005;
+    else if (scoreMultiplier === 5) speedIncrement = 0.015;
+    else if (scoreMultiplier === 10) speedIncrement = 0.035;
+    else if (scoreMultiplier === 15) speedIncrement = 0.065;
+    else if (scoreMultiplier === 20) speedIncrement = 0.120; // โหมดนรกแตก วิ่งไปแป๊บเดียวไวจัด!
 
     confirmedPlayerName = name;
     pNameInput.disabled = true;
@@ -394,8 +388,8 @@
     score = 0;
     cactusPos = document.getElementById('game-box').offsetWidth; 
     
-    // 🟢 ความเร็วเริ่มต้นเป็น 0 ตามโจทย์ของคุณ
-    currentSpeed = 0; 
+    // 🟢 กลับมาใช้ความเร็วเริ่มต้น 7.0 เปิดฉากมาสปีดปกติทันที
+    currentSpeed = 7.0; 
 
     document.getElementById('currentScore').innerText = score;
     gameStatus.style.display = 'none';
@@ -404,11 +398,11 @@
     dino.style.transform = "rotate(0deg)"; 
 
     gameInterval = setInterval(() => {
-      // 🟢 คะแนนบวกขึ้นตามโหมดตัวคูณ (เช่น เล่นโหมด x5 คะแนนก็ขึ้นทีละ 5)
+      // คะแนนเพิ่มตามตัวคูณโหมดที่เลือก
       score += scoreMultiplier;
       document.getElementById('currentScore').innerText = score;
       
-      // 🟢 ความเร็วค่อยๆ เร่งเพิ่มขึ้นเรื่อยๆ ทีละจุดตามโหมดที่ตั้งไว้
+      // ความเร็วเร่งสะสมเพิ่มจากฐาน 7.0 ขึ้นไปเรื่อยๆ ตามตัวคูณความยาก
       currentSpeed += speedIncrement;
 
       if (dinoY > 0 || dinoVelocityY > 0) {
@@ -428,7 +422,6 @@
         dino.style.transform = `rotate(${angle}deg)`;
       } else { dino.style.transform = ""; }
 
-      // 🟢 หักลบตำแหน่งตามความเร็ว ณ ปัจจุบันที่เร่งขึ้นเรื่อยๆ
       cactusPos -= currentSpeed;
 
       if(cactusPos < -40) {
